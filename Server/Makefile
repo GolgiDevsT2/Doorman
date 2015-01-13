@@ -54,7 +54,7 @@ keys:
 	@echo "    public static String APP_KEY = \"$(shell (cat ../Golgi.AppKey | tr -d ' \r\n'))\";" >> $(GOLGI_KEYS)
 	@echo "}" >> $(GOLGI_KEYS)
 
-prep:getVariables
+prep:
 	@echo "Preparing code base"
 	cp io/golgi/example/doorman/DoormanServer.java.default /tmp/
 	sed -i.bak s/PKEY_PIN/\"$(PIN)\"/g /tmp/DoormanServer.java.default
