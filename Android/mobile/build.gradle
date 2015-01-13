@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 project.ext {
     GOLGI_DIR = "$System.env.HOME" + '/Golgi-Pkg/LATEST'
-    GOLGI_THRIFT_FILE = "../../Doorman.Thrift"
+    GOLGI_THRIFT_FILE = "../../Doorman.thrift"
     GOLGI_DEV_KEY_FILE = "../../Golgi.DevKey"
     GOLGI_APP_KEY_FILE = "../../Golgi.AppKey"
     GOLGI_GEN_DIR = "src/main/java/io/golgi/example/doorman/gen"
