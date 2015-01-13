@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF1B3F021A65AD68006DCBEC /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFB520D91A657514007AAEAD /* libsqlite3.0.dylib */; };
 		BF44E76C1986516E00C67F56 /* SvcWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = BF44E76B1986516E00C67F56 /* SvcWrapper.m */; };
 		BF60A6FD199125980076DD3F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF60A6FC199125980076DD3F /* AVFoundation.framework */; };
 		BF60A7011991271C0076DD3F /* doorbuzzer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF60A7001991271C0076DD3F /* doorbuzzer.mp3 */; };
@@ -27,7 +28,6 @@
 		BF700C0A1981377E00852B5C /* doorman_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BF700C051981377E00852B5C /* doorman_icon.png */; };
 		BF700C0B1981377E00852B5C /* pto_button.png in Resources */ = {isa = PBXBuildFile; fileRef = BF700C061981377E00852B5C /* pto_button.png */; };
 		BF700C0C1981377E00852B5C /* pto_pressed_button.png in Resources */ = {isa = PBXBuildFile; fileRef = BF700C071981377E00852B5C /* pto_pressed_button.png */; };
-		BF700C1219814CCD00852B5C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700C1119814CCD00852B5C /* libsqlite3.dylib */; };
 		BF70437D1981605000852B5C /* gdmViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF70437C1981605000852B5C /* gdmViewController.m */; };
 		BF70437F198163CC00852B5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF70437E198163CC00852B5C /* Main.storyboard */; };
 		BF7F5097199E45950088C29C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF7F5096199E45950088C29C /* libz.dylib */; };
@@ -36,6 +36,7 @@
 		BF9DABD21992411800DED3F2 /* guestKeyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9DABD11992411800DED3F2 /* guestKeyViewController.m */; };
 		BF9DABD519925FBC00DED3F2 /* KeyRequestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9DABD419925FBC00DED3F2 /* KeyRequestViewController.m */; };
 		BFA41D0A19879E9500AE6F3E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA41D0919879E9500AE6F3E /* CoreLocation.framework */; };
+		BFB520DB1A6576C4007AAEAD /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BFB520D91A657514007AAEAD /* libsqlite3.0.dylib */; };
 		BFBA23131A5D3B8700490829 /* keyViewController.m.default in Resources */ = {isa = PBXBuildFile; fileRef = BFBA23121A5D3B8700490829 /* keyViewController.m.default */; };
 		BFE25F2E198922A2007FCFA1 /* keyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE25F2D198922A2007FCFA1 /* keyViewController.m */; };
 		BFE25F3119892DB0007FCFA1 /* staffKeyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE25F3019892DB0007FCFA1 /* staffKeyViewController.m */; };
@@ -93,6 +94,7 @@
 		BF9DABD319925FBC00DED3F2 /* KeyRequestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyRequestViewController.h; sourceTree = "<group>"; };
 		BF9DABD419925FBC00DED3F2 /* KeyRequestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyRequestViewController.m; sourceTree = "<group>"; };
 		BFA41D0919879E9500AE6F3E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		BFB520D91A657514007AAEAD /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		BFBA23121A5D3B8700490829 /* keyViewController.m.default */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = keyViewController.m.default; sourceTree = "<group>"; };
 		BFE25F2C198922A2007FCFA1 /* keyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyViewController.h; sourceTree = "<group>"; };
 		BFE25F2D198922A2007FCFA1 /* keyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = keyViewController.m; sourceTree = "<group>"; };
@@ -109,10 +111,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFB520DB1A6576C4007AAEAD /* libsqlite3.0.dylib in Frameworks */,
 				BF7F5097199E45950088C29C /* libz.dylib in Frameworks */,
 				BF60A6FD199125980076DD3F /* AVFoundation.framework in Frameworks */,
 				BFA41D0A19879E9500AE6F3E /* CoreLocation.framework in Frameworks */,
-				BF700C1219814CCD00852B5C /* libsqlite3.dylib in Frameworks */,
 				BF700BD5198132C000852B5C /* CoreGraphics.framework in Frameworks */,
 				BF700BD7198132C000852B5C /* UIKit.framework in Frameworks */,
 				BF700BD3198132C000852B5C /* Foundation.framework in Frameworks */,
@@ -123,6 +125,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF1B3F021A65AD68006DCBEC /* libsqlite3.0.dylib in Frameworks */,
 				BF700BEC198132C000852B5C /* XCTest.framework in Frameworks */,
 				BF700BEE198132C000852B5C /* UIKit.framework in Frameworks */,
 				BF700BED198132C000852B5C /* Foundation.framework in Frameworks */,
@@ -163,6 +166,7 @@
 		BF700BD1198132C000852B5C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BFB520D91A657514007AAEAD /* libsqlite3.0.dylib */,
 				BF7F5096199E45950088C29C /* libz.dylib */,
 				BF60A6FC199125980076DD3F /* AVFoundation.framework */,
 				BFA41D0919879E9500AE6F3E /* CoreLocation.framework */,
@@ -367,7 +371,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#cp -f \"$PROJECT_DIR/../../Doorman.thrift\" \"$PROJECT_DIR/$PROJECT_NAME\"\n#echo '#define DOORMAN_DEV_KEY @\"'`cat $PROJECT_DIR/../../Golgi.DevKey`'\"' >\"$PROJECT_DIR/$PROJECT_NAME/DOORMAN_KEYS.h\"\n#echo '#define DOORMAN_APP_KEY @\"'`cat $PROJECT_DIR/../../Golgi.AppKey`'\"' >>\"$PROJECT_DIR/$PROJECT_NAME/DOORMAN_KEYS.h\"\n#. $PROJECT_DIR/$PROJECT_NAME/golgi.sh;\n$PROJECT_DIR/$PROJECT_NAME/doorman-build-script.sh";
+			shellScript = "$PROJECT_DIR/$PROJECT_NAME/doorman-build-script.sh";
 		};
 /* End PBXShellScriptBuildPhase section */
 
