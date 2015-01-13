@@ -514,7 +514,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/ianh/Golgi-Pkg/LATEST/iOS",
+					"$(HOME)/Golgi-Pkg/LATEST/iOS",
 					"$(PROJECT_DIR)/Doorman",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -537,7 +537,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/ianh/Golgi-Pkg/LATEST/iOS",
+					"$(HOME)/Golgi-Pkg/LATEST/iOS",
 					"$(PROJECT_DIR)/Doorman",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
