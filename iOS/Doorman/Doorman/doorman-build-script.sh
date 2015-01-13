@@ -20,14 +20,14 @@ GOLGI_LIB_DIR="$PROJECT_DIR/$PROJECT_NAME"
 cp -f "$PROJECT_DIR/../../Doorman.thrift" "$WKDIR"
 
 #
-# Create the GOLGI_KEYS.h file containing
+# Create the DOORMAN_KEYS.h file containing
 # the Developer key and the application key
 #
 
 DEVKEY=`cat "$PROJECT_DIR/../../Golgi.DevKey"`
 APPKEY=`cat "$PROJECT_DIR/../../Golgi.AppKey"`
-echo "#define GOLGI_DEV_KEY @\"$DEVKEY\"" >"$GOLGI_HDR_DIR/GOLGI_KEYS.h"
-echo "#define GOLGI_APP_KEY @\"$APPKEY\"" >>"$GOLGI_HDR_DIR/GOLGI_KEYS.h"
+echo "#define GOLGI_DEV_KEY @\"$DEVKEY\"" >"$GOLGI_HDR_DIR/DOORMAN_KEYS.h"
+echo "#define GOLGI_APP_KEY @\"$APPKEY\"" >>"$GOLGI_HDR_DIR/DOORMAN_KEYS.h"
 
 
 . "$GOLGI_PKG_DIR/iOS/golgi_gen.sh"
