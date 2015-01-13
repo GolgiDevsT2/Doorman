@@ -59,25 +59,25 @@ The Android code can be built on any machine with Android Studio. Like all iOS a
 
 The server side code should be built directly on your Raspberry Pi. This allows the installation scripts to install libarary dependencies required for the project. *Ensure that the Doorman.conf file for this build is consistent with your mobile builds*. The server side build commands are as follows:
 
-sudo apt-get update
-sudo apt-get install mysql-server
-cd /path/to/Doorman/Server
-
-echo PASSWORD > Doorman.mysql.passwd # substitute password of choice for PASSWORD
-echo PIN > Doorman.pin # substitute pin of choice for PIN
-echo ADDR > Doorman.address # substitute address of choice for ADDR
-
-sh scripts/setupMySQL.sh
-
-mysql -u root -p < scripts/createMySQLDatabase.sql # use root MySQL password
-mysql -u root -p < scripts/createMySQLUser.sql # use root MySQL password
-
-make all
-sudo make install
+    sudo apt-get update
+    sudo apt-get install mysql-server
+    cd /path/to/Doorman/Server
+    
+    echo PASSWORD > Doorman.mysql.passwd # substitute password of choice for PASSWORD
+    echo PIN > Doorman.pin # substitute pin of choice for PIN
+    echo ADDR > Doorman.address # substitute address of choice for ADDR
+    
+    sh scripts/setupMySQL.sh
+    
+    mysql -u root -p < scripts/createMySQLDatabase.sql # use root MySQL password
+    mysql -u root -p < scripts/createMySQLUser.sql # use root MySQL password
+    
+    make all
+    sudo make install
 
 Once complete you can check if Doorman is successfully running on your system with the command
 
-service doorman status
+    service doorman status
 
 and by checking the logging output in /opt/doorman/log.
 
