@@ -1,0 +1,464 @@
+//
+// This Software (the "Software") is supplied to you by Openmind Networks
+// Limited ("Openmind") your use, installation, modification or
+// redistribution of this Software constitutes acceptance of this disclaimer.
+// If you do not agree with the terms of this disclaimer, please do not use,
+// install, modify or redistribute this Software.
+//
+// TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED ON AN
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER
+// EXPRESS OR IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR
+// CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A
+// PARTICULAR PURPOSE.
+//
+// Each user of the Software is solely responsible for determining the
+// appropriateness of using and distributing the Software and assumes all
+// risks associated with use of the Software, including but not limited to
+// the risks and costs of Software errors, compliance with applicable laws,
+// damage to or loss of data, programs or equipment, and unavailability or
+// interruption of operations.
+//
+// TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW OPENMIND SHALL NOT
+// HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, WITHOUT LIMITATION,
+// LOST PROFITS, LOSS OF BUSINESS, LOSS OF USE, OR LOSS OF DATA), HOWSOEVER 
+// CAUSED UNDER ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+// WAY OUT OF THE USE OR DISTRIBUTION OF THE SOFTWARE, EVEN IF ADVISED OF
+// THE POSSIBILITY OF SUCH DAMAGES.
+//
+
+//
+// This is the main Doorman Server file
+//
+
+package io.golgi.example.doorman;
+
+import io.golgi.example.doorman.gen.DoormanService;
+import io.golgi.example.doorman.gen.AccessRequest;
+import io.golgi.example.doorman.gen.AccessResponse;
+import io.golgi.example.doorman.gen.KeyRequest;
+import io.golgi.example.doorman.gen.KeyResponse;
+import io.golgi.example.doorman.gen.GolgiKeys;
+import com.openmindnetworks.golgi.api.GolgiAPI;
+import com.openmindnetworks.golgi.api.GolgiAPIHandler;
+import com.openmindnetworks.golgi.api.GolgiAPINetworkImpl;
+import com.openmindnetworks.golgi.api.GolgiException;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.util.Random;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.lang.StringBuilder;
+import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Calendar;
+
+import org.apache.log4j.Logger;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+
+import io.golgi.example.doorman.DoormanGPIO;
+
+public class DoormanServer {
+
+    static Map<String, DoormanService.sendKeyRequest.ResultSender> map = new HashMap<String, DoormanService.sendKeyRequest.ResultSender>();
+
+    private static final Logger Log = Logger.getLogger(DoormanServer.class);
+    private final static String mysql_user = MYSQL_USER;
+    private final static String mysql_pwd = MYSQL_PWD;
+    private final static String pkey_pin = PKEY_PIN;
+    private final static String pkey_address = PKEY_ADDRESS;
+
+    // key creation
+    private static String createKey(){
+        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 20; i++) {
+                char c = chars[random.nextInt(chars.length)];
+                    sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    // check if granter is authorised
+    private static boolean granterAuthorised(KeyRequest req){
+        int keyType = -1;
+        Connection conn = null;
+        ResultSet rs;
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/doorman?" +
+                                               "user="+mysql_user+"&password="+mysql_pwd);
+            PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM users where uname=?");
+            pstmt.setString(1,req.getRequestId());
+            rs = pstmt.executeQuery();
+            rs.next();
+            keyType = rs.getInt(4);
+
+        } catch (SQLException ex) {
+            // handle any errors
+            Log.info("SQLException: " + ex.getMessage());
+            Log.info("SQLState: " + ex.getSQLState());
+            Log.info("VendorError: " + ex.getErrorCode());
+        } finally {
+            if(conn != null){
+                try {
+                    conn.close();
+                } catch (SQLException ex) {}
+            }
+        }
+        
+        if(keyType == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    private static boolean checkKey(ResultSet rs) throws SQLException{
+        Calendar calendar;
+        int day;
+        int month;
+        int year;
+        int dbday;
+        int dbmonth;
+        int dbyear;
+        int keyType;
+
+        if(rs.next() == false){
+            Log.info("No key in database for specified uname");
+            return false;
+        }
+
+        // get the key type
+        Log.info("Checking key type");
+        keyType = rs.getInt(4);
+        Log.info("Key type checked");
+
+        // check keyType - if it is temporary check the date
+        if(keyType == 1){
+            calendar = Calendar.getInstance();
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            month = calendar.get(Calendar.MONTH);
+            year = calendar.get(Calendar.YEAR);
+            
+            dbday = rs.getInt(5);
+            dbmonth = rs.getInt(6);
+            dbyear = rs.getInt(7);
+
+            if(day != dbday || month != dbmonth || year != dbyear){
+                Log.info("Key date does not match [req:db] - ["+day+":"+dbday+"] ["+month+":"+dbmonth+"] ["+year+":"+dbyear+"]");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static String createAndStoreKey(String uname,
+                                            int keyType, 
+                                            int day,
+                                            int month,
+                                            int year){
+        String key = null;
+
+        // create and store a key
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        boolean test;
+
+        if(keyType == 0){
+            Log.info("createAndStoreKey called for permanent key");
+        }
+        else{
+            Log.info("createAndStoreKey called for termporary key");
+        }
+
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/doorman?" +
+                                               "user="+mysql_user+"&password="+mysql_pwd);
+            pstmt = conn.prepareStatement("SELECT * FROM users where uname=?");
+            Log.info("Lookin up uname: " + uname);
+            pstmt.setString(1,uname);
+            rs = pstmt.executeQuery();
+            if(checkKey(rs)){
+                key = rs.getString(3);
+                Log.info("Successfully extracted key " + key + "from mysql database");
+            }
+            else{
+                key = createKey();
+                pstmt = conn.prepareStatement("INSERT INTO users (uname,userKey,type,day,month,year) values (?,?,?,?,?,?)");
+                pstmt.setString(1,uname);
+                pstmt.setString(2,key);
+                pstmt.setInt(3,keyType);
+                pstmt.setInt(4,day);
+                pstmt.setInt(5,month);
+                pstmt.setInt(6,year);
+                if(pstmt.executeUpdate() == 1){
+                    Log.info("Successfully updated mysql database");
+                }
+            }
+        } catch (SQLException ex) {
+            // handle any errors
+            Log.info("createAndStoreKey sql exception");
+            Log.info("SQLException: " + ex.getMessage());
+            Log.info("SQLState: " + ex.getSQLState());
+            Log.info("VendorError: " + ex.getErrorCode());
+        } finally {
+            if(rs != null){
+                try{
+                    rs.close();
+                }catch(SQLException ex){}
+            }
+            if(pstmt != null){
+                try{
+                    pstmt.close();
+                } catch(SQLException ex){}
+            }
+            if(conn != null){
+                try{
+                    conn.close();
+                } catch (SQLException ex) {}
+            }
+        }
+
+        return key;
+    }
+
+    private static String createAndStoreKey(String uname,
+                                            int keyType){
+        return createAndStoreKey(uname,
+                                 keyType,
+                                 -1,
+                                 -1,
+                                 -1);
+    }
+
+    public static void main (String [] args) throws Exception{
+
+        // Static reference to load the class
+        Class<GolgiAPI> apiRef = GolgiAPI.class;  
+        // Host and port of Golgi Servers
+        GolgiAPI.setAPIImpl(new GolgiAPINetworkImpl()); 
+
+        Log.info("GolgiServer");
+
+        //String ourId;
+        GolgiAPI.getInstance().register(GolgiKeys.DEV_KEY,
+                                        GolgiKeys.APP_KEY,
+                                        "doormanserver",
+                                        new GolgiAPIHandler() {
+
+                                              @Override
+                                              public void registerSuccess() {
+                                                  Log.info("Registration Success");
+                                              }
+
+                                              @Override
+                                              public void registerFailure() {
+                                                  Log.info("Registration Failure");
+                                              }
+                                        });
+
+        // setup access request receiver
+        DoormanService.sendAccessRequest.RequestReceiver DoormanAccessRequestReceiver = new DoormanService.sendAccessRequest.RequestReceiver() {
+            @Override
+            public void receiveFrom(DoormanService.sendAccessRequest.ResultSender resultSender, AccessRequest req){
+                AccessResponse rsp = new AccessResponse();
+                String key = null;
+                int rspCode;
+                Date sDate;
+                Date cDate;
+                Long dateInMilli = new Long(0);
+
+                Log.info("Received an AccessRequest");
+                Log.info("User Id: "+req.getUname());
+                Log.info("Lat: "+req.getLat()+" Lon: "+req.getLon());
+                if(req.tshIsSet() && req.tslIsSet()){
+
+                    dateInMilli |= req.getTsh();
+                    dateInMilli <<= 32;
+                    dateInMilli |= (req.getTsl() & 0xffffffffL);
+
+                    cDate = new Date(dateInMilli);
+                    sDate = new Date();
+                    Log.info("Server date is: " + sDate.toString());
+                    Log.info("Client date is: " + cDate.toString());
+                }
+
+                if(req.getUname().length() == 0 || req.getKey().length() == 0){
+                    rsp.setCode("400");
+                    resultSender.success(rsp);
+                    return;
+                }
+
+                // create and store a key
+                Connection conn = null;
+                ResultSet rs = null;
+                try {
+                    conn = DriverManager.getConnection("jdbc:mysql://localhost/doorman?" +
+                                                       "user="+mysql_user+"&password="+mysql_pwd);
+                    PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM users where uname=?");
+                    pstmt.setString(1,req.getUname());
+                    rs = pstmt.executeQuery();
+                    if(!checkKey(rs)){
+                        rsp.setCode("403");
+                        resultSender.success(rsp);
+                        Log.info("Key check failed - rejecting with 403 Forbidden");
+                    }
+                    else{
+                        key = rs.getString(3);
+                    }
+                } catch (SQLException ex) {
+                    // handle any errors
+                    Log.info("SQLException: " + ex.getMessage());
+                    Log.info("SQLState: " + ex.getSQLState());
+                    Log.info("VendorError: " + ex.getErrorCode());
+                } finally {
+                    if(conn != null){
+                        try {
+                            conn.close();
+                        } catch (SQLException ex) {}
+                    }
+                }
+
+                if(key == null){
+                    Log.info("No key extracted Forbidden response sent - all that's left to do is return");
+                    return;
+                }
+
+                if(!key.equals(req.getKey())){
+                    rsp.setCode("403");
+                    resultSender.success(rsp);
+                    Log.info(key);
+                    Log.info(req.getKey());
+                    return;
+                }
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        DoormanGPIO dgpio;
+                        dgpio = DoormanGPIO.getInstance();
+
+                        if(dgpio != null){
+                            try {
+                                dgpio.TriggerDoor();
+                                Log.info("Trigger Door");
+                            } catch (InterruptedException e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).start();
+
+                rsp.setCode("200");
+                resultSender.success(rsp);
+            }
+        };
+
+        // key response receiver
+        final DoormanService.sendKeyRequest.ResultReceiver keyResponseReceiver =
+                        new DoormanService.sendKeyRequest.ResultReceiver() {
+            @Override
+            public void success(KeyResponse response){
+                String key = null;
+
+                Log.info("Received result to key request for " + response.getUname());
+                DoormanService.sendKeyRequest.ResultSender resultSender;
+                synchronized(DoormanServer.map){
+                    resultSender = map.remove(response.getMsgid());
+                }
+                if(resultSender == null){
+                    Log.info("ERROR: failed to retrieve an result sender to forward key response");
+                    return;
+                }
+                
+                // - generate key and add to the mysql database
+                key = createAndStoreKey(response.getUname(),
+                                        1, // 1 is a temporary key
+                                        response.getDay(),
+                                        response.getMonth(),
+                                        response.getYear());
+
+                // - send the response
+                response.setKey(key);
+                resultSender.success(response);
+            }
+
+            @Override
+            public void failure(GolgiException ex) {
+            }
+        };
+
+        // setup key request receiver
+        DoormanService.sendKeyRequest.RequestReceiver DoormanKeyRequestReceiver = new DoormanService.sendKeyRequest.RequestReceiver() {
+            @Override
+            public void receiveFrom(DoormanService.sendKeyRequest.ResultSender resultSender, KeyRequest req){
+                KeyResponse rsp = new KeyResponse();
+                int keyType; // 0 permanent, 1 temporary
+                String key = null;
+
+                Log.info("Received a KeyRequest");
+
+                if(req.getRequestId().length() == 0 || req.getSenderId().length() == 0){
+                    Log.info("Rejecting key request no request id or sender id - 400 Bad Request");
+                    rsp.setCode("400");
+                    resultSender.success(rsp);
+                    return;
+                }
+
+                if(req.getRequestId().equals(pkey_address)){ // this is a permanent key request
+                    if(req.getAuth().length() == 0 || !req.getAuth().equals(pkey_pin)){
+                        Log.info("Rejecting key request incorrect pin for permanent key request - 403 Forbidden");
+                        rsp.setCode("403");
+                        resultSender.success(rsp);
+                        return;
+                    }
+                    keyType = 0;
+                }
+                else{
+                    // - check that the request id is someone with permanent keys
+                    if(granterAuthorised(req)){
+                        Log.info("Key granter is authorised - adding resultSender to hash map and forwarding request");
+                        // - add data to a hash map
+                        synchronized(DoormanServer.map){
+                            map.put(req.getMsgid(),resultSender);
+                        }
+                        // - forward request to granter
+                        DoormanService.sendKeyRequest.sendTo(keyResponseReceiver,req.getRequestId(),req);
+                    }
+                    else{
+                        Log.info("Rejecting key request granter is not authorised - 403 Forbidden");
+                        rsp.setCode("403");
+                        resultSender.success(rsp);
+                    }
+                    return;
+                }
+                key = createAndStoreKey(req.getSenderId(),
+                                        keyType);
+
+                rsp.setCode("200");
+                rsp.setKey(key);
+                rsp.setUname(req.getSenderId());
+                resultSender.success(rsp);
+            }
+        };
+
+        // register the requestReceiver
+        DoormanService.sendAccessRequest.registerReceiver(DoormanAccessRequestReceiver);
+        DoormanService.sendKeyRequest.registerReceiver(DoormanKeyRequestReceiver);
+    }
+}
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Doorman</string>
+    <string name="action_settings">Settings</string>
+    <string name="open_door">Open</string>
+    <string name="push_button">Push the button...</string>
+    <string name="no_net">No network connection</string>
+    <string name="contact_doorman">Contacting doorman...</string>
+    <string name="check_connection">Checking connection</string>
+    <string name="doorman_offline">Sorry but Doorman is currently offline</string>
+    <string name="access_granted">Access Granted</string>
+    <string name="wrong_net">Sorry you do not appear to be on the correct LAN</string>
+    <string name="req_inflight">Doorman request in flight - please be patient</string>
+    <string name="too_far">Location cannot be verified: </string>
+    <string name="request_key">Request Key</string>
+    <string name="key_requester_hint">Your e-mail</string>
+    <string name="key_granter_hint">Key granter e-mail</string>
+    <string name="pin_required">Pin required</string>
+    <string name="no_pin_required">No pin required</string>
+    <string name="key_request_submit">Request Key</string>
+    <string name="key_request_issue">Issue Keys</string>
+    <string name="key_request_deny">Deny Keys</string>
+    <string name="key_request_next">Next</string>
+    <string name="key_request_cancel">Cancel</string>
+    <string name="key_issued_ok">Ok</string>
+    <string name="no_username">No valid username - please request keys using the menu</string>
+    <string name="no_key">No key set - you will be notified when you\'re keys have been issued</string>
+    <string name="no_requester_address">Requester address not set for key request</string>
+    <string name="no_granter_address">Key granter address not set for key request</string>
+    <string name="no_pin_set">Pin not set - required for issuing of permanent keys</string>
+    <string name="title_activity_key">KeyActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_doormanwear">Doormanwear</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
+
+</resources>

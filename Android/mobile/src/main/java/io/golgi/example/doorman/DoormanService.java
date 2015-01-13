@@ -1,0 +1,556 @@
+//
+// This Software (the "Software") is supplied to you by Openmind Networks
+// Limited ("Openmind") your use, installation, modification or
+// redistribution of this Software constitutes acceptance of this disclaimer.
+// If you do not agree with the terms of this disclaimer, please do not use,
+// install, modify or redistribute this Software.
+//
+// TO THE MAXIMUM EXTENT PERMITTED BY LAW, THE SOFTWARE IS PROVIDED ON AN
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER
+// EXPRESS OR IMPLIED INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR
+// CONDITIONS OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A
+// PARTICULAR PURPOSE.
+//
+// Each user of the Software is solely responsible for determining the
+// appropriateness of using and distributing the Software and assumes all
+// risks associated with use of the Software, including but not limited to
+// the risks and costs of Software errors, compliance with applicable laws,
+// damage to or loss of data, programs or equipment, and unavailability or
+// interruption of operations.
+//
+// TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW OPENMIND SHALL NOT
+// HAVE ANY LIABILITY FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, WITHOUT LIMITATION,
+// LOST PROFITS, LOSS OF BUSINESS, LOSS OF USE, OR LOSS OF DATA), HOWSOEVER
+// CAUSED UNDER ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+// LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY
+// WAY OUT OF THE USE OR DISTRIBUTION OF THE SOFTWARE, EVEN IF ADVISED OF
+// THE POSSIBILITY OF SUCH DAMAGES.
+//
+
+package io.golgi.example.doorman;
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+
+import io.golgi.apiimpl.android.GolgiAPIAndroidImpl;
+import io.golgi.example.doorman.gen.AccessRequest;
+import io.golgi.example.doorman.gen.AccessResponse;
+import io.golgi.example.doorman.gen.GolgiKeys;
+import io.golgi.example.doorman.gen.KeyRequest;
+import io.golgi.example.doorman.gen.KeyResponse;
+import com.openmindnetworks.golgi.api.GolgiAPI;
+import com.openmindnetworks.golgi.api.GolgiAPIHandler;
+import com.openmindnetworks.golgi.api.GolgiBaseAPI;
+import com.openmindnetworks.golgi.api.GolgiException;
+import com.openmindnetworks.golgi.api.GolgiTransportOptions;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+/*
+ * Created by ianh on 1/8/14.
+ */
+public class DoormanService extends io.golgi.apiimpl.android.GolgiService implements io.golgi.example.doorman.gen.DoormanService,
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener{
+
+    private static DoormanService doormanService = null;
+    private static boolean isStarted = false;
+    private static boolean isRegistered = false;
+    private SharedPref sp = null;
+    private LocationClient mLocationClient;
+    private Location mCurrentLocation;
+    private Location mOfficeLocation;
+    private String doormanServerName = "doormanserver-uname";
+
+    public class GolgiContainer {
+        public sendKeyRequest.ResultSender resultSender;
+        public KeyRequest keyRequest;
+        public GolgiContainer(){
+        }
+    }
+    public Map<String, GolgiContainer> map = new HashMap<String, GolgiContainer>();
+
+    // Strings for intents to the WearMessageAPIService
+    final static String WEARABLE_ACCESS_INTENT = "io.golgi.example.doorman.WEARABLE_ACCESS_INTENT";
+    final static String WEARABLE_RESPONSE_INTENT = "io.golgi.example.doorman.WEARABLE_RESPONSE_INTENT";
+    final static String WEARABLE_RESPONSE = "io.golgi.example.doorman.WEARABLE_RESPONSE";
+    final static String WEARABLE_SUCCESS = "io.golgi.example.doorman.WEARABLE_SUCCESS";
+    final static String WEARABLE_FAILURE = "io.golgi.example.doorman.WEARABLE_FAILURE";
+
+    // Strings for intents to the Doorman UI
+    final static String DOORMAN_ACCESS_INTENT = "io.golgi.example.doorman.DoormanService.DOORMAN_ACCESS_INTENT";
+    final static String DOORMAN_KEY_INTENT = "io.golgi.example.doorman.DoormanService.DOORMAN_KEY_INTENT";
+    final static String DOORMAN_RESULT = "io.golgi.example.doorman.DoormanService.DOORMAN_INTENT";
+    final static String DOORMAN_ACCESS_GRANTED = "io.golgi.example.doorman.DoormanService.DOORMAN_ACCESS_GRANTED";
+    final static String DOORMAN_ACCESS_REJECTED_FORBIDDEN = "io.golgi.example.doorman.DoormanService.DOORMAN_ACCESS_REJECTED_FORBIDDEN";
+    final static String DOORMAN_ACCESS_REJECTED_UNKNOWN = "io.golgi.example.doorman.DoormanService.DOORMAN_ACCESS_REJECTED_UNKNOWN";
+    final static String DOORMAN_KEY_ISSUED = "io.golgi.example.com.doorman.DoormanService.DOORMAN_KEY_ISSUED";
+    final static String DOORMAN_KEY_NOT_ISSUED = "io.golgi.example.com.doorman.DoormanService.DOORMAN_KEY_NOT_ISSUED";
+    final static String DOORMAN_RECEIVE_KEY_INTENT = "io.golgi.example.doorman.DoormanService.DOORMAN_TMP_KEY_INTENT";
+
+    // Local Broadcast Manager
+    private static LocalBroadcastManager sBroadcaster = null;
+    // Broadcast Receiver
+    private BroadcastReceiver wearableAccessReceiver;
+
+    public static DoormanService getInstance(){
+        return doormanService;
+    }
+
+    // handle an AccessRequest response
+    DoormanService.sendAccessRequest.ResultReceiver contactDoormanReceiver =
+            new DoormanService.sendAccessRequest.ResultReceiver() {
+
+                @Override
+                public void success(AccessResponse response){
+                    Log.i("OMN", "Received a Successful Response with payload");
+                    sp.setInFlight(false);
+                    try {
+                        DoormanService.UIAccessIntent(response.getCode());
+                        Intent intent = new Intent(WEARABLE_RESPONSE_INTENT);
+                        intent.putExtra(WEARABLE_RESPONSE,response.getCode().equals("200")?WEARABLE_SUCCESS:WEARABLE_FAILURE);
+                        sBroadcaster.sendBroadcast(intent);
+                    }
+                    catch (Exception e){
+                    }
+                    finally {
+                    }
+                }
+
+                @Override
+                public void failure(GolgiException ex) {
+                    Log.i("OMN","Received a Golgi Exception");
+                    sp.setInFlight(false);
+                    //The request could not be delivered to the server. Full details of why
+                    //will be contained in the Exception
+                }
+
+            };
+
+    // handle a KeyRequest response
+    DoormanService.sendKeyRequest.ResultReceiver keyResponseReceiver =
+            new DoormanService.sendKeyRequest.ResultReceiver() {
+
+                String key;
+
+                @Override
+                public void success(KeyResponse response){
+                    Log.i("OMN", "Received a Successful Response with payload");
+                    try {
+                        key = response.getKey();
+                        sp.writeUName(response.getUname());
+                        sp.writeKey(key);
+                        DoormanService.getInstance().UIKeyIntent(response.getCode(),response.getKey());
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                    finally {
+                    }
+                }
+
+                @Override
+                public void failure(GolgiException ex) {
+                    Log.i("OMN","Received a Crackle Exception");
+                }
+            };
+
+    // handle a KeyRequest
+    DoormanService.sendKeyRequest.RequestReceiver DoormanKeyRequestReceiver = new DoormanService.sendKeyRequest.RequestReceiver() {
+        @Override
+        public void receiveFrom(DoormanService.sendKeyRequest.ResultSender resultSender, KeyRequest req){
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_MONTH,req.getDay());
+            calendar.set(Calendar.MONTH,req.getMonth());
+            calendar.set(Calendar.YEAR,req.getYear());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+            String display = req.getSenderId() + " has requested keys for " + simpleDateFormat.format(calendar.getTime());
+            // - store the request with the message id
+            DoormanService.GolgiContainer container = new DoormanService.GolgiContainer();
+            container.resultSender = resultSender;
+            container.keyRequest = req;
+            synchronized(DoormanService.getInstance().map){
+                DoormanService.getInstance().map.put(req.getMsgid(),container);
+            }
+            // - create the alert dialog
+            // create Key request dialog and pass on
+            DoormanService.getInstance().ReceiveKeyIntent(req.getSenderId(),display,req.getMsgid());
+        }
+    };
+
+    public void golgiRegister(){
+        Log.i("OMN","Attempting to register");
+        if(sp == null){
+            sp = new SharedPref(getBaseContext());
+        }
+        if(isStarted && !isRegistered && sp.readUName() != null){
+            // Register With Crackle
+            
+            GolgiAPI.getInstance().register(GolgiKeys.DEV_KEY,
+                    GolgiKeys.APP_KEY,
+                    sp.readUName(),
+                    new GolgiAPIHandler() {
+                        @Override
+                        public void registerSuccess() {
+                            Log.i("DEBUG", "Registration Success");
+                        }
+                        @Override
+                        public void registerFailure() {
+                            Log.i("DEBUG", "Registration Failure");
+                        }
+                    }
+            );
+            DoormanService.sendKeyRequest.registerReceiver(DoormanKeyRequestReceiver);
+            isRegistered = true;
+        }
+    }
+
+    public static boolean isStarted(){
+        return isStarted;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent,int flags,int startId){
+        super.onStartCommand(intent,flags,startId);
+        doormanService = this;
+        isStarted = true;
+        golgiRegister();
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy(){
+        isStarted = false;
+        isRegistered = false;
+        sBroadcaster.unregisterReceiver(wearableAccessReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onCreate(){
+        super.onCreate();
+
+        mLocationClient = new LocationClient(this,this,this);
+        mOfficeLocation = new Location("DMAN");
+        mOfficeLocation.setLatitude(53.34378);
+        mOfficeLocation.setLongitude(-6.24707);
+        sBroadcaster = LocalBroadcastManager.getInstance(this);
+
+        wearableAccessReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                sendAccessRequest();
+            }
+        };
+
+        sBroadcaster.registerReceiver(wearableAccessReceiver,new IntentFilter(WEARABLE_ACCESS_INTENT));
+    }
+
+    private boolean checkLocation(){
+        float dist;
+        float MAX_DIST = 500;
+
+        if(!GooglePlayServicesConnected()){
+            Toast toast = Toast.makeText(getBaseContext(),"Google Play Location Services Unavailable",Toast.LENGTH_LONG);
+            toast.show();
+            return false;
+        }
+        else{
+            mCurrentLocation = mLocationClient.getLastLocation();
+            if(mCurrentLocation == null){
+                Toast toast = Toast.makeText(getBaseContext(),"No location services enabled",Toast.LENGTH_LONG);
+                toast.show();
+                return false;
+            }
+            if((dist = mCurrentLocation.distanceTo(mOfficeLocation)) < MAX_DIST){
+                return true;
+            }
+            else{
+                String tString = R.string.too_far + String.valueOf(dist);
+                Toast toast = Toast.makeText(getBaseContext(),tString,Toast.LENGTH_LONG);
+                toast.show();
+                return false;
+            }
+        }
+    }
+
+    private boolean GooglePlayServicesConnected() {
+        // Check that Google Play services is available
+        int resultCode =
+                GooglePlayServicesUtil.
+                        isGooglePlayServicesAvailable(this);
+        // If Google Play services is available
+        if (ConnectionResult.SUCCESS == resultCode) {
+            // In debug mode, log the status
+            Log.d("Location Updates",
+                    "Google Play services is available.");
+            // Continue
+            return true;
+            // Google Play services was not available for some reason
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle dataBundle) {
+
+        // Display the connection status
+        Toast.makeText(this, "Connected to Google Services", Toast.LENGTH_SHORT).show();
+        sendAccessRequestWkr();
+        mLocationClient.disconnect();
+    }
+
+    /*
+     * Called by Location Services if the connection to the
+     * location client drops because of an error.
+     */
+    @Override
+    public void onDisconnected() {
+        // Display the connection status
+        Toast.makeText(this, "Disconnected from Google Services.",Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+     * Called by Location Services if the attempt to
+     * Location Services fails.
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        /*
+         * Google Play services can resolve some errors it detects.
+         * If the error has a resolution, try sending an Intent to
+         * start a Google Play services activity that can resolve
+         * error.
+         */
+        Toast.makeText(getBaseContext(),"On connection failed called",Toast.LENGTH_LONG).show();
+    }
+
+
+    public static void UIAccessIntent(String rc){
+        Intent intent = new Intent(DOORMAN_ACCESS_INTENT);
+        if(rc.equals("200")){
+            intent.putExtra(DOORMAN_RESULT,DOORMAN_ACCESS_GRANTED);
+        }
+        else if(rc.equals("403")){
+            intent.putExtra(DOORMAN_RESULT,DOORMAN_ACCESS_REJECTED_FORBIDDEN);
+        }
+        else{
+            intent.putExtra(DOORMAN_RESULT,DOORMAN_ACCESS_REJECTED_UNKNOWN);
+        }
+        sBroadcaster.sendBroadcast(intent);
+    }
+
+    public void sendAccessRequestWkr(){
+        Toast toast;
+        Long dateInMilli;
+        int val = 0;
+        Date cDate = new Date();
+        AccessRequest access = new AccessRequest();
+        GolgiTransportOptions golgiTransportOptions = new GolgiTransportOptions();
+        golgiTransportOptions.setValidityPeriod(60);
+
+        if(checkLocation()){
+            // get client date
+            dateInMilli = cDate.getTime();
+            // add client date to request by splitting into two i32's
+            val |= dateInMilli;
+            access.setTsl(val);
+            dateInMilli >>= 32;
+            val = 0;
+            val |= dateInMilli;
+            access.setTsh(val);
+
+            // set the username, key, latitude and longitude values
+            access.setUname(sp.readUName());
+            access.setKey(sp.readKey());
+            access.setLat(String.valueOf(mCurrentLocation.getLatitude()));
+            access.setLon(String.valueOf(mCurrentLocation.getLongitude()));
+
+            // send the request and log
+            Log.i("OMN","Message sent");
+            //Toast.makeText(this,"Sending Access Request",Toast.LENGTH_LONG).show();
+            DoormanService.sendAccessRequest.sendTo(DoormanService.getInstance().contactDoormanReceiver,golgiTransportOptions,doormanServerName,access);
+        }
+        else{
+            toast = Toast.makeText(getBaseContext(),R.string.too_far,Toast.LENGTH_LONG);
+            toast.show();
+            sp.setInFlight(false);
+        }
+    }
+
+    public void sendAccessRequest(){
+
+        // if the inFlight is true don't send another message
+        if(sp.getInFlight()){
+            Toast.makeText(getBaseContext(),R.string.req_inflight,Toast.LENGTH_LONG).show();
+            Log.i("OMN","Request in flight");
+            return;
+        }
+
+        // check we have a uname
+        if(sp.readUName().length() == 0){
+            Toast.makeText(getBaseContext(),R.string.no_username,Toast.LENGTH_LONG).show();
+            Log.i("OMN","uname not set");
+            return;
+        }
+
+        if(sp.readKey().length() == 0){
+            Toast.makeText(getBaseContext(),R.string.no_key,Toast.LENGTH_LONG).show();
+            Log.i("OMN","No key set");
+            return;
+        }
+
+        // setting inflight to true to send door access request
+        sp.setInFlight(true);
+        mLocationClient.connect();
+    }
+
+    private String generateMessageId(){
+        char[] chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 20; i++) {
+            char c = chars[random.nextInt(chars.length)];
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    public void sendKeyRequest(String username,String pin,String key_granter,int day, int month, int year){
+        DoormanService.getInstance().golgiRegister();
+        KeyRequest krequest = new KeyRequest();
+        krequest.setSenderId(username);
+        krequest.setRequestId(key_granter);
+        if(pin.length()>0){
+            krequest.setAuth(pin);
+        }
+        krequest.setDay(day);
+        krequest.setMonth(month);
+        krequest.setYear(year);
+        krequest.setMsgid(generateMessageId());
+
+        DoormanService.sendKeyRequest.sendTo(DoormanService.getInstance().keyResponseReceiver,doormanServerName,krequest);
+        Log.i("OMN","Key request sent");
+    }
+
+    public void UIKeyIntent(String rc,String key){
+        Intent intent;
+        String result;
+
+        if(Doorman.isInForeground()){
+            intent = new Intent(DOORMAN_KEY_INTENT);
+            if(rc.equals("200")){
+                intent.putExtra(DOORMAN_RESULT,DOORMAN_KEY_ISSUED);
+                intent.putExtra("KEY",key);
+            }
+            else{
+                intent.putExtra(DOORMAN_RESULT,DOORMAN_KEY_NOT_ISSUED);
+            }
+            sBroadcaster.sendBroadcast(intent);
+        }
+        else{
+            // Creates an explicit intent for an Activity in your app
+            intent = new Intent(this, Doorman.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            if(rc.equals("200")){
+                result = "Issued";
+                intent.putExtra(DOORMAN_RESULT,DOORMAN_KEY_ISSUED);
+                intent.putExtra("KEY",key);
+            }
+            else{
+                result = "Denied";
+                intent.putExtra(DOORMAN_RESULT,DOORMAN_KEY_NOT_ISSUED);
+            }
+            NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.doorman_icon)
+                        .setContentTitle("Key Request")
+                        .setContentText(result)
+                        .setAutoCancel(true);
+
+
+            // The stack builder object will contain an artificial back stack for the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(Doorman.class);
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(intent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // mId allows you to update the notification later on.
+            mNotificationManager.notify(0, mBuilder.build());
+        }
+    }
+
+    public void ReceiveKeyIntent(String requesterName, String display, String msgid){
+        Intent intent;
+
+        if(Doorman.isInForeground()){
+            intent = new Intent(DOORMAN_RECEIVE_KEY_INTENT);
+            intent.putExtra("Message-ID",msgid);
+            intent.putExtra("display",display);
+            sBroadcaster.sendBroadcast(intent);
+        }
+        else{
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.doorman_icon)
+                            .setContentTitle("Customer Key Request")
+                            .setContentText(requesterName)
+                            .setAutoCancel(true);
+            // Creates an explicit intent for an Activity in your app
+            intent = new Intent(this, Doorman.class);
+            intent.putExtra("Message-ID",msgid);
+            intent.putExtra("display",display);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // The stack builder object will contain an artificial back stack for the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(Doorman.class);
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(intent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            // mId allows you to update the notification later on.
+            mNotificationManager.notify(0, mBuilder.build());
+        }
+    }
+}

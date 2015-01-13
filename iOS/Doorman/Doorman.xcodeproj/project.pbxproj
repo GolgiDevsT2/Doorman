@@ -1,0 +1,623 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BF44E76C1986516E00C67F56 /* SvcWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = BF44E76B1986516E00C67F56 /* SvcWrapper.m */; };
+		BF60A6FD199125980076DD3F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF60A6FC199125980076DD3F /* AVFoundation.framework */; };
+		BF60A7011991271C0076DD3F /* doorbuzzer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF60A7001991271C0076DD3F /* doorbuzzer.mp3 */; };
+		BF700BD3198132C000852B5C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700BD2198132C000852B5C /* Foundation.framework */; };
+		BF700BD5198132C000852B5C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700BD4198132C000852B5C /* CoreGraphics.framework */; };
+		BF700BD7198132C000852B5C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700BD6198132C000852B5C /* UIKit.framework */; };
+		BF700BDD198132C000852B5C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF700BDB198132C000852B5C /* InfoPlist.strings */; };
+		BF700BDF198132C000852B5C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BF700BDE198132C000852B5C /* main.m */; };
+		BF700BE3198132C000852B5C /* gdmAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BF700BE2198132C000852B5C /* gdmAppDelegate.m */; };
+		BF700BE5198132C000852B5C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF700BE4198132C000852B5C /* Images.xcassets */; };
+		BF700BEC198132C000852B5C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700BEB198132C000852B5C /* XCTest.framework */; };
+		BF700BED198132C000852B5C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700BD2198132C000852B5C /* Foundation.framework */; };
+		BF700BEE198132C000852B5C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700BD6198132C000852B5C /* UIKit.framework */; };
+		BF700BF6198132C000852B5C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF700BF4198132C000852B5C /* InfoPlist.strings */; };
+		BF700BF8198132C000852B5C /* DoormanTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BF700BF7198132C000852B5C /* DoormanTests.m */; };
+		BF700C081981377E00852B5C /* background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = BF700C031981377E00852B5C /* background.jpg */; };
+		BF700C091981377E00852B5C /* do_button.png in Resources */ = {isa = PBXBuildFile; fileRef = BF700C041981377E00852B5C /* do_button.png */; };
+		BF700C0A1981377E00852B5C /* doorman_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = BF700C051981377E00852B5C /* doorman_icon.png */; };
+		BF700C0B1981377E00852B5C /* pto_button.png in Resources */ = {isa = PBXBuildFile; fileRef = BF700C061981377E00852B5C /* pto_button.png */; };
+		BF700C0C1981377E00852B5C /* pto_pressed_button.png in Resources */ = {isa = PBXBuildFile; fileRef = BF700C071981377E00852B5C /* pto_pressed_button.png */; };
+		BF700C1219814CCD00852B5C /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF700C1119814CCD00852B5C /* libsqlite3.dylib */; };
+		BF70437D1981605000852B5C /* gdmViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF70437C1981605000852B5C /* gdmViewController.m */; };
+		BF70437F198163CC00852B5C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF70437E198163CC00852B5C /* Main.storyboard */; };
+		BF7F5097199E45950088C29C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BF7F5096199E45950088C29C /* libz.dylib */; };
+		BF8C93831982A48200E3CFB1 /* AccessResultHandlerImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = BF8C93821982A48200E3CFB1 /* AccessResultHandlerImpl.m */; };
+		BF8DBD6C19F952440021C54D /* doorman-build-script.sh in Resources */ = {isa = PBXBuildFile; fileRef = BF8DBD6B19F952440021C54D /* doorman-build-script.sh */; };
+		BF9DABD21992411800DED3F2 /* guestKeyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9DABD11992411800DED3F2 /* guestKeyViewController.m */; };
+		BF9DABD519925FBC00DED3F2 /* KeyRequestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BF9DABD419925FBC00DED3F2 /* KeyRequestViewController.m */; };
+		BFA41D0A19879E9500AE6F3E /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFA41D0919879E9500AE6F3E /* CoreLocation.framework */; };
+		BFBA23131A5D3B8700490829 /* keyViewController.m.default in Resources */ = {isa = PBXBuildFile; fileRef = BFBA23121A5D3B8700490829 /* keyViewController.m.default */; };
+		BFE25F2E198922A2007FCFA1 /* keyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE25F2D198922A2007FCFA1 /* keyViewController.m */; };
+		BFE25F3119892DB0007FCFA1 /* staffKeyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE25F3019892DB0007FCFA1 /* staffKeyViewController.m */; };
+		BFE25F3419894D1B007FCFA1 /* KeyResultHandlerImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE25F3319894D1B007FCFA1 /* KeyResultHandlerImpl.m */; };
+		BFE25F37198AB8BE007FCFA1 /* GolgiWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = BFE25F36198AB8BE007FCFA1 /* GolgiWrapper.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BF700BEF198132C000852B5C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BF700BC7198132C000852B5C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF700BCE198132C000852B5C;
+			remoteInfo = Doorman;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BF41CC5A1986A90A006B9C6D /* DoormanConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = DoormanConfig.xcconfig; sourceTree = "<group>"; };
+		BF44E76A1986516E00C67F56 /* SvcWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SvcWrapper.h; sourceTree = "<group>"; };
+		BF44E76B1986516E00C67F56 /* SvcWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SvcWrapper.m; sourceTree = "<group>"; };
+		BF60A6FC199125980076DD3F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		BF60A7001991271C0076DD3F /* doorbuzzer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = doorbuzzer.mp3; path = ../doorbuzzer.mp3; sourceTree = "<group>"; };
+		BF700BCF198132C000852B5C /* Doorman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doorman.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF700BD2198132C000852B5C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		BF700BD4198132C000852B5C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		BF700BD6198132C000852B5C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		BF700BDA198132C000852B5C /* Doorman-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Doorman-Info.plist"; sourceTree = "<group>"; };
+		BF700BDC198132C000852B5C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BF700BDE198132C000852B5C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BF700BE0198132C000852B5C /* Doorman-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Doorman-Prefix.pch"; sourceTree = "<group>"; };
+		BF700BE1198132C000852B5C /* gdmAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gdmAppDelegate.h; sourceTree = "<group>"; };
+		BF700BE2198132C000852B5C /* gdmAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = gdmAppDelegate.m; sourceTree = "<group>"; };
+		BF700BE4198132C000852B5C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		BF700BEA198132C000852B5C /* DoormanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DoormanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF700BEB198132C000852B5C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		BF700BF3198132C000852B5C /* DoormanTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "DoormanTests-Info.plist"; sourceTree = "<group>"; };
+		BF700BF5198132C000852B5C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		BF700BF7198132C000852B5C /* DoormanTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DoormanTests.m; sourceTree = "<group>"; };
+		BF700C031981377E00852B5C /* background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = background.jpg; sourceTree = "<group>"; };
+		BF700C041981377E00852B5C /* do_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = do_button.png; sourceTree = "<group>"; };
+		BF700C051981377E00852B5C /* doorman_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = doorman_icon.png; sourceTree = "<group>"; };
+		BF700C061981377E00852B5C /* pto_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pto_button.png; sourceTree = "<group>"; };
+		BF700C071981377E00852B5C /* pto_pressed_button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pto_pressed_button.png; sourceTree = "<group>"; };
+		BF700C1119814CCD00852B5C /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		BF70437B1981605000852B5C /* gdmViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gdmViewController.h; sourceTree = "<group>"; };
+		BF70437C1981605000852B5C /* gdmViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = gdmViewController.m; sourceTree = "<group>"; };
+		BF70437E198163CC00852B5C /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../Main.storyboard; sourceTree = "<group>"; };
+		BF7F5096199E45950088C29C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		BF8C93811982A48200E3CFB1 /* AccessResultHandlerImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessResultHandlerImpl.h; sourceTree = "<group>"; };
+		BF8C93821982A48200E3CFB1 /* AccessResultHandlerImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessResultHandlerImpl.m; sourceTree = "<group>"; };
+		BF8DBD6B19F952440021C54D /* doorman-build-script.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "doorman-build-script.sh"; sourceTree = "<group>"; };
+		BF9DABD01992411800DED3F2 /* guestKeyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guestKeyViewController.h; sourceTree = "<group>"; };
+		BF9DABD11992411800DED3F2 /* guestKeyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = guestKeyViewController.m; sourceTree = "<group>"; };
+		BF9DABD319925FBC00DED3F2 /* KeyRequestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyRequestViewController.h; sourceTree = "<group>"; };
+		BF9DABD419925FBC00DED3F2 /* KeyRequestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyRequestViewController.m; sourceTree = "<group>"; };
+		BFA41D0919879E9500AE6F3E /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		BFBA23121A5D3B8700490829 /* keyViewController.m.default */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = keyViewController.m.default; sourceTree = "<group>"; };
+		BFE25F2C198922A2007FCFA1 /* keyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = keyViewController.h; sourceTree = "<group>"; };
+		BFE25F2D198922A2007FCFA1 /* keyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = keyViewController.m; sourceTree = "<group>"; };
+		BFE25F2F19892DB0007FCFA1 /* staffKeyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = staffKeyViewController.h; sourceTree = "<group>"; };
+		BFE25F3019892DB0007FCFA1 /* staffKeyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = staffKeyViewController.m; sourceTree = "<group>"; };
+		BFE25F3219894D1B007FCFA1 /* KeyResultHandlerImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyResultHandlerImpl.h; sourceTree = "<group>"; };
+		BFE25F3319894D1B007FCFA1 /* KeyResultHandlerImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyResultHandlerImpl.m; sourceTree = "<group>"; };
+		BFE25F35198AB8BE007FCFA1 /* GolgiWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GolgiWrapper.h; sourceTree = "<group>"; };
+		BFE25F36198AB8BE007FCFA1 /* GolgiWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GolgiWrapper.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BF700BCC198132C000852B5C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF7F5097199E45950088C29C /* libz.dylib in Frameworks */,
+				BF60A6FD199125980076DD3F /* AVFoundation.framework in Frameworks */,
+				BFA41D0A19879E9500AE6F3E /* CoreLocation.framework in Frameworks */,
+				BF700C1219814CCD00852B5C /* libsqlite3.dylib in Frameworks */,
+				BF700BD5198132C000852B5C /* CoreGraphics.framework in Frameworks */,
+				BF700BD7198132C000852B5C /* UIKit.framework in Frameworks */,
+				BF700BD3198132C000852B5C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF700BE7198132C000852B5C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF700BEC198132C000852B5C /* XCTest.framework in Frameworks */,
+				BF700BEE198132C000852B5C /* UIKit.framework in Frameworks */,
+				BF700BED198132C000852B5C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BF60A70219913F5E0076DD3F /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				BF60A7001991271C0076DD3F /* doorbuzzer.mp3 */,
+			);
+			name = Sounds;
+			sourceTree = "<group>";
+		};
+		BF700BC6198132C000852B5C = {
+			isa = PBXGroup;
+			children = (
+				BF41CC5A1986A90A006B9C6D /* DoormanConfig.xcconfig */,
+				BF700BD8198132C000852B5C /* Doorman */,
+				BF700BF1198132C000852B5C /* DoormanTests */,
+				BF700BD1198132C000852B5C /* Frameworks */,
+				BF700BD0198132C000852B5C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BF700BD0198132C000852B5C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BF700BCF198132C000852B5C /* Doorman.app */,
+				BF700BEA198132C000852B5C /* DoormanTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BF700BD1198132C000852B5C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BF7F5096199E45950088C29C /* libz.dylib */,
+				BF60A6FC199125980076DD3F /* AVFoundation.framework */,
+				BFA41D0919879E9500AE6F3E /* CoreLocation.framework */,
+				BF700C1119814CCD00852B5C /* libsqlite3.dylib */,
+				BF700BD2198132C000852B5C /* Foundation.framework */,
+				BF700BD4198132C000852B5C /* CoreGraphics.framework */,
+				BF700BD6198132C000852B5C /* UIKit.framework */,
+				BF700BEB198132C000852B5C /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BF700BD8198132C000852B5C /* Doorman */ = {
+			isa = PBXGroup;
+			children = (
+				BF60A70219913F5E0076DD3F /* Sounds */,
+				BF8C93811982A48200E3CFB1 /* AccessResultHandlerImpl.h */,
+				BF8C93821982A48200E3CFB1 /* AccessResultHandlerImpl.m */,
+				BF70437E198163CC00852B5C /* Main.storyboard */,
+				BFE25F3219894D1B007FCFA1 /* KeyResultHandlerImpl.h */,
+				BF8DBD6B19F952440021C54D /* doorman-build-script.sh */,
+				BFE25F35198AB8BE007FCFA1 /* GolgiWrapper.h */,
+				BFE25F36198AB8BE007FCFA1 /* GolgiWrapper.m */,
+				BFE25F3319894D1B007FCFA1 /* KeyResultHandlerImpl.m */,
+				BFE25F2F19892DB0007FCFA1 /* staffKeyViewController.h */,
+				BFE25F3019892DB0007FCFA1 /* staffKeyViewController.m */,
+				BFE25F2C198922A2007FCFA1 /* keyViewController.h */,
+				BFBA23121A5D3B8700490829 /* keyViewController.m.default */,
+				BFE25F2D198922A2007FCFA1 /* keyViewController.m */,
+				BF700C0D19814A0C00852B5C /* Images */,
+				BF700BE1198132C000852B5C /* gdmAppDelegate.h */,
+				BF700BE2198132C000852B5C /* gdmAppDelegate.m */,
+				BF700BE4198132C000852B5C /* Images.xcassets */,
+				BF700BD9198132C000852B5C /* Supporting Files */,
+				BF70437B1981605000852B5C /* gdmViewController.h */,
+				BF70437C1981605000852B5C /* gdmViewController.m */,
+				BF44E76A1986516E00C67F56 /* SvcWrapper.h */,
+				BF44E76B1986516E00C67F56 /* SvcWrapper.m */,
+				BF9DABD01992411800DED3F2 /* guestKeyViewController.h */,
+				BF9DABD11992411800DED3F2 /* guestKeyViewController.m */,
+				BF9DABD319925FBC00DED3F2 /* KeyRequestViewController.h */,
+				BF9DABD419925FBC00DED3F2 /* KeyRequestViewController.m */,
+			);
+			path = Doorman;
+			sourceTree = "<group>";
+		};
+		BF700BD9198132C000852B5C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BF700BDA198132C000852B5C /* Doorman-Info.plist */,
+				BF700BDB198132C000852B5C /* InfoPlist.strings */,
+				BF700BDE198132C000852B5C /* main.m */,
+				BF700BE0198132C000852B5C /* Doorman-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BF700BF1198132C000852B5C /* DoormanTests */ = {
+			isa = PBXGroup;
+			children = (
+				BF700BF7198132C000852B5C /* DoormanTests.m */,
+				BF700BF2198132C000852B5C /* Supporting Files */,
+			);
+			path = DoormanTests;
+			sourceTree = "<group>";
+		};
+		BF700BF2198132C000852B5C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BF700BF3198132C000852B5C /* DoormanTests-Info.plist */,
+				BF700BF4198132C000852B5C /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		BF700C0D19814A0C00852B5C /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				BF700C031981377E00852B5C /* background.jpg */,
+				BF700C041981377E00852B5C /* do_button.png */,
+				BF700C051981377E00852B5C /* doorman_icon.png */,
+				BF700C061981377E00852B5C /* pto_button.png */,
+				BF700C071981377E00852B5C /* pto_pressed_button.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BF700BCE198132C000852B5C /* Doorman */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF700BFB198132C000852B5C /* Build configuration list for PBXNativeTarget "Doorman" */;
+			buildPhases = (
+				BF700C1019814C7D00852B5C /* ShellScript */,
+				BF700BCB198132C000852B5C /* Sources */,
+				BF700BCC198132C000852B5C /* Frameworks */,
+				BF700BCD198132C000852B5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Doorman;
+			productName = Doorman;
+			productReference = BF700BCF198132C000852B5C /* Doorman.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BF700BE9198132C000852B5C /* DoormanTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF700BFE198132C000852B5C /* Build configuration list for PBXNativeTarget "DoormanTests" */;
+			buildPhases = (
+				BF700BE6198132C000852B5C /* Sources */,
+				BF700BE7198132C000852B5C /* Frameworks */,
+				BF700BE8198132C000852B5C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BF700BF0198132C000852B5C /* PBXTargetDependency */,
+			);
+			name = DoormanTests;
+			productName = DoormanTests;
+			productReference = BF700BEA198132C000852B5C /* DoormanTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BF700BC7198132C000852B5C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = gdm;
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = Golgi;
+				TargetAttributes = {
+					BF700BCE198132C000852B5C = {
+						DevelopmentTeam = CJ62T3H7T2;
+					};
+					BF700BE9198132C000852B5C = {
+						TestTargetID = BF700BCE198132C000852B5C;
+					};
+				};
+			};
+			buildConfigurationList = BF700BCA198132C000852B5C /* Build configuration list for PBXProject "Doorman" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BF700BC6198132C000852B5C;
+			productRefGroup = BF700BD0198132C000852B5C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BF700BCE198132C000852B5C /* Doorman */,
+				BF700BE9198132C000852B5C /* DoormanTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BF700BCD198132C000852B5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF700C081981377E00852B5C /* background.jpg in Resources */,
+				BF700C0B1981377E00852B5C /* pto_button.png in Resources */,
+				BF700C091981377E00852B5C /* do_button.png in Resources */,
+				BFBA23131A5D3B8700490829 /* keyViewController.m.default in Resources */,
+				BF70437F198163CC00852B5C /* Main.storyboard in Resources */,
+				BF700C0C1981377E00852B5C /* pto_pressed_button.png in Resources */,
+				BF60A7011991271C0076DD3F /* doorbuzzer.mp3 in Resources */,
+				BF700BDD198132C000852B5C /* InfoPlist.strings in Resources */,
+				BF700BE5198132C000852B5C /* Images.xcassets in Resources */,
+				BF700C0A1981377E00852B5C /* doorman_icon.png in Resources */,
+				BF8DBD6C19F952440021C54D /* doorman-build-script.sh in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF700BE8198132C000852B5C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF700BF6198132C000852B5C /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BF700C1019814C7D00852B5C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#cp -f \"$PROJECT_DIR/../../Doorman.thrift\" \"$PROJECT_DIR/$PROJECT_NAME\"\n#echo '#define DOORMAN_DEV_KEY @\"'`cat $PROJECT_DIR/../../Golgi.DevKey`'\"' >\"$PROJECT_DIR/$PROJECT_NAME/DOORMAN_KEYS.h\"\n#echo '#define DOORMAN_APP_KEY @\"'`cat $PROJECT_DIR/../../Golgi.AppKey`'\"' >>\"$PROJECT_DIR/$PROJECT_NAME/DOORMAN_KEYS.h\"\n#. $PROJECT_DIR/$PROJECT_NAME/golgi.sh;\n$PROJECT_DIR/$PROJECT_NAME/doorman-build-script.sh";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BF700BCB198132C000852B5C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF700BDF198132C000852B5C /* main.m in Sources */,
+				BFE25F3419894D1B007FCFA1 /* KeyResultHandlerImpl.m in Sources */,
+				BF8C93831982A48200E3CFB1 /* AccessResultHandlerImpl.m in Sources */,
+				BF70437D1981605000852B5C /* gdmViewController.m in Sources */,
+				BFE25F3119892DB0007FCFA1 /* staffKeyViewController.m in Sources */,
+				BF700BE3198132C000852B5C /* gdmAppDelegate.m in Sources */,
+				BFE25F2E198922A2007FCFA1 /* keyViewController.m in Sources */,
+				BF44E76C1986516E00C67F56 /* SvcWrapper.m in Sources */,
+				BFE25F37198AB8BE007FCFA1 /* GolgiWrapper.m in Sources */,
+				BF9DABD519925FBC00DED3F2 /* KeyRequestViewController.m in Sources */,
+				BF9DABD21992411800DED3F2 /* guestKeyViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF700BE6198132C000852B5C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF700BF8198132C000852B5C /* DoormanTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BF700BF0198132C000852B5C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF700BCE198132C000852B5C /* Doorman */;
+			targetProxy = BF700BEF198132C000852B5C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BF700BDB198132C000852B5C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF700BDC198132C000852B5C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		BF700BF4198132C000852B5C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BF700BF5198132C000852B5C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BF700BF9198132C000852B5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF41CC5A1986A90A006B9C6D /* DoormanConfig.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		BF700BFA198132C000852B5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF41CC5A1986A90A006B9C6D /* DoormanConfig.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BF700BFC198132C000852B5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Doorman/Doorman-Prefix.pch";
+				INFOPLIST_FILE = "Doorman/Doorman-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/ianh/Golgi-Pkg/LATEST/iOS",
+					"$(PROJECT_DIR)/Doorman",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		BF700BFD198132C000852B5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Doorman/Doorman-Prefix.pch";
+				INFOPLIST_FILE = "Doorman/Doorman-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/ianh/Golgi-Pkg/LATEST/iOS",
+					"$(PROJECT_DIR)/Doorman",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		BF700BFF198132C000852B5C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Doorman.app/Doorman";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Doorman/Doorman-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "DoormanTests/DoormanTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		BF700C00198132C000852B5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Doorman.app/Doorman";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Doorman/Doorman-Prefix.pch";
+				INFOPLIST_FILE = "DoormanTests/DoormanTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BF700BCA198132C000852B5C /* Build configuration list for PBXProject "Doorman" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF700BF9198132C000852B5C /* Debug */,
+				BF700BFA198132C000852B5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF700BFB198132C000852B5C /* Build configuration list for PBXNativeTarget "Doorman" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF700BFC198132C000852B5C /* Debug */,
+				BF700BFD198132C000852B5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BF700BFE198132C000852B5C /* Build configuration list for PBXNativeTarget "DoormanTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF700BFF198132C000852B5C /* Debug */,
+				BF700C00198132C000852B5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BF700BC7198132C000852B5C /* Project object */;
+}

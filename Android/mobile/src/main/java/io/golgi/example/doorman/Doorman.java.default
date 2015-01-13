@@ -1,0 +1,362 @@
+package io.golgi.example.doorman;
+
+import android.content.BroadcastReceiver;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.os.Bundle;
+import android.content.Context;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiInfo;
+import android.net.Uri;
+import android.media.RingtoneManager;
+import android.media.Ringtone;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import android.widget.TextView;
+import java.util.Timer;
+import java.util.TimerTask;
+import io.golgi.example.doorman.gen.KeyResponse;
+import com.openmindnetworks.golgi.api.GolgiAPI;
+
+public class Doorman extends ActionBarActivity implements
+        SendKeyRequestDialogFragment.SendKeyRequestDialogListener,
+        PinDialogFragment.PinDialogListener,
+        CalendarDialogFragment.CalendarDialogListener,
+        ReceiveKeyRequestDialogFragment.ReceiveKeyRequestDialogListener{
+
+    private BroadcastReceiver UIAccessReceiver;
+    private BroadcastReceiver UIKeyReceiver;
+    private BroadcastReceiver ReceiveKeyReceiver;
+    private String username = "";
+    private String key_granter = "";
+    private String key = "";
+    private String pin = "";
+    private int day;
+    private int month;
+    private int year;
+    private SharedPref sp = null;
+    private static boolean mIsForeground = false;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Decide what to do based on the original request code
+    }
+
+    public static void  startService(Context context){
+        Log.i("OMN", "Starting Service");
+        Intent serviceIntent = new Intent();
+        serviceIntent.setClassName("io.golgi.example.doorman",
+                "io.golgi.example.doorman.DoormanService");
+        context.startService(serviceIntent);
+        serviceIntent = new Intent();
+        serviceIntent.setClassName("io.golgi.example.doorman",
+                "io.golgi.example.doorman.WearMessageAPIService");
+        context.startService(serviceIntent);
+        Log.i("OMN", "Done");
+    }
+
+    public void startService(){
+        startService(this);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_doorman);
+        if(!DoormanService.getInstance().isStarted()){
+            startService();
+        }
+        Intent intent = getIntent();
+        String msgId  = intent.getStringExtra("Message-ID");
+        String display = intent.getStringExtra("display");
+        String doormanResult = intent.getStringExtra(DoormanService.DOORMAN_RESULT);
+        DialogFragment newFragment;
+        if(msgId != null && display != null){
+            newFragment = ReceiveKeyRequestDialogFragment.newInstance(display,msgId);
+            Log.i("OMN","Displaying dialog");
+            newFragment.show(getSupportFragmentManager(), "KeyRequest");
+            key = intent.getStringExtra("KEY");
+        }
+        if(doormanResult != null){
+            if(doormanResult.equals(DoormanService.DOORMAN_KEY_ISSUED)){
+                newFragment = MAlertDialogFragment.newInstance("Doorman Key Issued");
+            }
+            else{
+                newFragment = MAlertDialogFragment.newInstance("Doorman Key Denied");
+            }
+            newFragment.show(getSupportFragmentManager(),"KeyAlertDialog");
+        }
+
+        UIAccessReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Toast toast;
+
+                // do something here.
+                setContentView(R.layout.activity_doorman);
+                String s = intent.getStringExtra(DoormanService.DOORMAN_RESULT);
+                if(s.equals(DoormanService.DOORMAN_ACCESS_GRANTED)){
+                    int soundResId = R.raw.doorbuzzer;
+                    String packageName = getBaseContext().getPackageName();
+
+                    Uri notification = Uri.parse("android.resource://" + packageName + "/" + soundResId);
+                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    r.play();
+                    Button button = (Button)findViewById(R.id.button1);
+                    button.setBackgroundResource(R.drawable.do_button);
+                }
+                else if(s.equals(DoormanService.DOORMAN_ACCESS_REJECTED_FORBIDDEN) || s.equals(DoormanService.DOORMAN_ACCESS_REJECTED_UNKNOWN)){
+                    toast = Toast.makeText(context,"Access has been rejected - please contact the doorman administrator",Toast.LENGTH_LONG);
+                    toast.show();
+                }
+                Timer t = new Timer(true);
+                UITimerTask task = new UITimerTask();
+                t.schedule(task,5000);
+            }
+        };
+
+        UIKeyReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                setContentView(R.layout.activity_doorman);
+                Log.i("OMN","UIKeyReceiver call");
+                String s = intent.getStringExtra(DoormanService.DOORMAN_RESULT);
+                key = intent.getStringExtra("KEY");
+                DialogFragment newFragment;
+
+                if(s.equals(DoormanService.DOORMAN_KEY_ISSUED)){
+                    newFragment = MAlertDialogFragment.newInstance("Doorman Key Issued");
+                    newFragment.show(getSupportFragmentManager(),"KeyAlertDialog");
+                }
+                else{
+                    newFragment = MAlertDialogFragment.newInstance("Doorman Key Denied");
+                    newFragment.show(getSupportFragmentManager(),"KeyAlertDialog");
+                }
+            }
+        };
+
+        ReceiveKeyReceiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context context,Intent intent){
+                DialogFragment newFragment = ReceiveKeyRequestDialogFragment.newInstance(intent.getStringExtra("display"),intent.getStringExtra("Message-ID"));
+                Log.i("OMN","Displaying dialog");
+                newFragment.show(getSupportFragmentManager(), "KeyRequest");
+            }
+        };
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver(UIAccessReceiver, new IntentFilter(DoormanService.DOORMAN_ACCESS_INTENT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(UIKeyReceiver, new IntentFilter(DoormanService.DOORMAN_KEY_INTENT));
+        LocalBroadcastManager.getInstance(this).registerReceiver(ReceiveKeyReceiver, new IntentFilter(DoormanService.DOORMAN_RECEIVE_KEY_INTENT));
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(UIAccessReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(UIKeyReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(ReceiveKeyReceiver);
+
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        setContentView(R.layout.activity_doorman);
+        if(sp == null){
+            sp = new SharedPref(getBaseContext());
+        }
+
+        mIsForeground = true;
+        username = sp.readUName();
+        key = sp.readKey();
+        sp.setInFlight(false);
+        GolgiAPI.usePersistentConnection();
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mIsForeground = false;
+        GolgiAPI.useEphemeralConnection();
+    }
+
+    public static boolean isInForeground(){
+        return mIsForeground;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.doorman, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.request_key:
+                // create Key request dialog and pass on
+                DialogFragment newFragment = SendKeyRequestDialogFragment.newInstance(username);
+                Log.i("OMN","Displaying dialog");
+                newFragment.show(getSupportFragmentManager(), "KeyRequest");
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onSendKeyRequestDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        key_granter = dialog.getArguments().getString("key_granter");
+        username = dialog.getArguments().getString("username");
+        if(username.length() == 0 || key_granter.length() == 0){
+            DialogFragment newFragment = SendKeyRequestDialogFragment.newInstance(username);
+            Log.i("OMN","Displaying dialog");
+            newFragment.show(getSupportFragmentManager(), "KeyRequest");
+            return;
+        }
+        else{
+            sp.writeUName(username);
+        }
+
+        if(key_granter.equals("$DoormanAddress")){
+            // launch pin dialog
+            DialogFragment newFragment = new PinDialogFragment();
+            Log.i("OMN","Displaying dialog");
+            newFragment.show(getSupportFragmentManager(), "Pin");
+        }
+        else{
+            // launch calendar dialog
+            DialogFragment newFragment = new CalendarDialogFragment();
+            newFragment.show(getSupportFragmentManager(),"Calendar");
+        }
+    }
+
+    @Override
+    public void onPinDialogPositiveClick(String rpin){
+        pin = rpin;
+        if(pin.length() == 0){
+            // launch pin dialog
+            DialogFragment newFragment = new PinDialogFragment();
+            Log.i("OMN","Displaying dialog");
+            newFragment.show(getSupportFragmentManager(), "Pin");
+        }
+        DoormanService.getInstance().sendKeyRequest(username, pin, key_granter, -1, -1, -1);
+    }
+
+    @Override
+    public void onCalendarDialogPositiveClick(int dy,int mon,int yr){
+        day = dy;
+        month = mon;
+        year = yr;
+        DoormanService.getInstance().sendKeyRequest(username, pin, key_granter, day, month, year);
+    }
+
+    @Override
+    public void onReceiveKeyRequestDialogPositiveClick(String msgid){
+        DoormanService.GolgiContainer container;
+        synchronized (DoormanService.getInstance().map){
+            container = DoormanService.getInstance().map.remove(msgid);
+        }
+
+        if(container == null){
+            Toast toast = Toast.makeText(getBaseContext(),"Could not lookup transaction",Toast.LENGTH_LONG);
+            toast.show();
+        }
+        else{
+            KeyResponse rsp = new KeyResponse();
+            rsp.setCode("200");
+            rsp.setUname(container.keyRequest.getSenderId());
+            rsp.setMsgid(container.keyRequest.getMsgid());
+            rsp.setDay(container.keyRequest.getDay());
+            rsp.setMonth(container.keyRequest.getMonth());
+            rsp.setYear(container.keyRequest.getYear());
+            container.resultSender.success(rsp);
+        }
+    }
+
+    @Override
+    public void onReceiveKeyRequestDialogNegativeClick(String msgid){
+        DoormanService.GolgiContainer container;
+        synchronized (DoormanService.getInstance().map){
+            container = DoormanService.getInstance().map.remove(msgid);
+        }
+        if(container == null){
+            Toast toast = Toast.makeText(getBaseContext(),"Could not lookup transaction",Toast.LENGTH_LONG);
+            toast.show();
+        }
+        else{
+            KeyResponse rsp = new KeyResponse();
+            rsp.setUname(container.keyRequest.getSenderId());
+            rsp.setMsgid(container.keyRequest.getMsgid());
+            rsp.setCode("401");
+            container.resultSender.success(rsp);
+        }
+    }
+
+    public String getUsername(){
+        return username;
+    }
+
+    public boolean isConnected(){
+        return true;
+    }
+
+    public void sendAccessRequest(View view){
+        // check connectivity
+        if(isConnected() == false){
+            return;
+        }
+
+        DoormanService.getInstance().sendAccessRequest();
+    }
+
+    private class UITimerTask extends TimerTask{
+
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    Button button = (Button)findViewById(R.id.button1);
+                    button.setBackgroundResource(R.drawable.pto_button);
+                    TextView tv = (TextView)findViewById(R.id.tv);
+                    tv.setText("");
+                }
+            });
+        }
+    }
+
+    public String getMacAddress() {
+        WifiManager wifiMan = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInf = wifiMan.getConnectionInfo();
+        return wifiInf.getMacAddress();
+    }
+}
+
+
+

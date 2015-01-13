@@ -1,0 +1,78 @@
+#!/bin/sh
+#
+# /etc/init.d/mysystem
+# Subsystem file for "doorman" server
+#
+# chkconfig: 2345 95 05
+# description: doorman server daemon
+#
+# processname: doorman
+# pidfile: /var/run/doorman.pid
+
+set -e
+
+RETVAL=0
+prog="doorman"
+PID=/var/run/$prog.pid
+LOCK=/var/lock/subsys/$prog
+CPATH=/opt/doorman/lib/httpcomponents-client-4.3.6/'*':/opt/doorman/lib/apache-log4j-1.2.17/'*':/opt/pi4j/lib/'*':/opt/doorman/bin/DoormanServer.jar:/home/pi/Golgi-Pkg/LATEST/common/golgi_j2se.jar
+DARGS="-Dlog4j.configuration=file:/opt/doorman/log4j.properties -cp $CPATH io.golgi.example.doorman.DoormanServer"
+
+. /lib/lsb/init-functions
+
+start() {
+    log_daemon_msg "Starting $prog:" || true
+    # start the process
+    if start-stop-daemon --start --oknodo --quiet --background --make-pidfile --pidfile $PID --exec /usr/bin/java -- $DARGS; then
+    	log_end_msg 0 || true
+    else
+    	log_end_msg 1 || true
+    fi
+}
+
+stop() {
+    log_daemon_msg "Stopping $prog:" || true
+    if start-stop-daemon --stop --quiet --oknodo --pidfile $PID; then
+    	log_end_msg 0 || true
+    else 
+    	log_end_msg 1 || true
+    fi
+}
+
+reload() {
+    log_daemon_msg "Reloading $prog:" || true
+    if start-stop-daemon --stop --signal 1 --backdround --quiet --oknodo --pidfile $PID --exec /usr/bin/java -- $DARGS; then
+    	log_end_msg 0 || true
+    else
+    	log_end_msg 1 || true
+    fi
+    echo
+}
+
+status() {
+    status_of_proc -p $PID
+    RETVAL=$?
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    reload)
+        reload
+        ;;
+    status)
+    	status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|reload|status}"
+        RETVAL=1
+esac
+exit $RETVAL

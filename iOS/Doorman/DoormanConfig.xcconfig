@@ -1,0 +1,8 @@
+//
+//  DoormanConfig.xcconfig
+//  Doorman
+//
+//  Created by Ian Harris on 28/07/2014.
+//  Copyright (c) 2014 Golgi. All rights reserved.
+//
+OTHER_LDFLAGS = -L${PROJECT_DIR}/${PROJECT_NAME} -ObjC -lGolgi

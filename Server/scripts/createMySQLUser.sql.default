@@ -1,0 +1,6 @@
+--
+-- CREATE doorman user and grant permissions
+--
+CREATE USER doorman@'localhost' IDENTIFIED BY 'PASSWD';
+GRANT ALL PRIVILEGES on doorman.* to doorman@'localhost';
+FLUSH PRIVILEGES;

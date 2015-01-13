@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="golgi-support-2.4.24">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/mobile/build/intermediates/exploded-aar/golgi-support/2.4.24/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/mobile/build/intermediates/exploded-aar/golgi-support/2.4.24/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
