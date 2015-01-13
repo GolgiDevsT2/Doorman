@@ -63,10 +63,6 @@ The server side code should be built directly on your Raspberry Pi. This allows 
     sudo apt-get install mysql-server
     cd /path/to/Doorman/Server
     
-    echo PASSWORD > Doorman.mysql.passwd # substitute password of choice for PASSWORD
-    echo PIN > Doorman.pin # substitute pin of choice for PIN
-    echo ADDR > Doorman.address # substitute address of choice for ADDR
-    
     sh scripts/setupMySQL.sh
     
     mysql -u root -p < scripts/createMySQLDatabase.sql # use root MySQL password
