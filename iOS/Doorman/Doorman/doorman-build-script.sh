@@ -26,8 +26,8 @@ cp -f "$PROJECT_DIR/../../Doorman.thrift" "$WKDIR"
 
 DEVKEY=`cat "$PROJECT_DIR/../../Golgi.DevKey"`
 APPKEY=`cat "$PROJECT_DIR/../../Golgi.AppKey"`
-echo "#define GOLGI_DEV_KEY @\"$DEVKEY\"" >"$GOLGI_HDR_DIR/DOORMAN_KEYS.h"
-echo "#define GOLGI_APP_KEY @\"$APPKEY\"" >>"$GOLGI_HDR_DIR/DOORMAN_KEYS.h"
+echo "#define DOORMAN_DEV_KEY @\"$DEVKEY\"" >"$GOLGI_HDR_DIR/DOORMAN_KEYS.h"
+echo "#define DOORMAN_APP_KEY @\"$APPKEY\"" >>"$GOLGI_HDR_DIR/DOORMAN_KEYS.h"
 
 
 . "$GOLGI_PKG_DIR/iOS/golgi_gen.sh"
