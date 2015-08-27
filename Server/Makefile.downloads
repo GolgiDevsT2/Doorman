@@ -1,0 +1,19 @@
+LIBS=libs
+
+rebuild_libs:clean_libs $(LIBS)/log4j-1.2.17.jar $(LIBS)/httpclient-4.5.jar
+
+clean_libs:
+	rm -f $(LIBS)/*.jar
+
+$(LIBS):
+	mkdir -p $(LIBS)
+
+$(LIBS)/log4j-1.2.17.jar:$(LIBS)
+	curl -s http://mirrors.whoishostingthis.com/apache/logging/log4j/1.2.17/log4j-1.2.17.tar.gz -o /tmp/log4j-1.2.17.tar.gz
+	tar xzf /tmp/log4j-1.2.17.tar.gz -C /tmp
+	cp /tmp/apache-log4j-1.2.17/log4j-1.2.17.jar $(LIBS)
+
+$(LIBS)/httpclient-4.5.jar:$(LIBS)
+	curl -s http://mirrors.whoishostingthis.com/apache//httpcomponents/httpclient/binary/httpcomponents-client-4.5-bin.tar.gz -o /tmp/httpcomponents-client-4.5-bin.tar.gz
+	tar xzf /tmp/httpcomponents-client-4.5-bin.tar.gz -C /tmp
+	cp /tmp/httpcomponents-client-4.5/lib/*.jar $(LIBS)
